@@ -6,7 +6,6 @@ def lambda_handler(event, context):
     body = event["body"]
     body = json.loads(body)
     session_id = body["session_id"]
-    context = s3_client.message
+    message = body["message"]
     history = dynamodb_client.get_chat_history(session_id)
-
-    
+    context = s3_client.get_context(message)
