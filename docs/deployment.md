@@ -12,7 +12,7 @@
 ## Step 1 — Create S3 Bucket (Knowledge Base)
 
 ```bash
-aws s3 mb s3://customer-service-bot-kb --region us-west-1
+aws s3 mb s3://customer-service-bot-kb --region us-east-1
 ```
 
 Upload FAQ documents:
@@ -34,7 +34,7 @@ aws dynamodb create-table \
     AttributeName=session_id,KeyType=HASH \
     AttributeName=timestamp,KeyType=RANGE \
   --billing-mode PAY_PER_REQUEST \
-  --region us-west-1
+  --region us-east-1
 ```
 
 ---
@@ -71,7 +71,7 @@ aws iam attach-role-policy --role-name CustomerServiceBotRole \
   --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
 
 aws iam attach-role-policy --role-name CustomerServiceBotRole \
-  --policy-arn arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+  --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
 ```
 
 ---
@@ -91,7 +91,7 @@ aws lambda create-function \
   --handler lambda_handler.handler \
   --zip-file fileb://lambda.zip \
   --timeout 30 \
-  --region us-west-1 \
+  --region us-east-1 \
   --environment Variables="{S3_BUCKET=customer-service-bot-kb,DYNAMODB_TABLE=ChatHistory}"
 ```
 
@@ -106,7 +106,7 @@ bash scripts/deploy.sh
 
 ```bash
 # Create REST API
-aws apigateway create-rest-api --name CustomerServiceBotAPI --region us-west-1
+aws apigateway create-rest-api --name CustomerServiceBotAPI --region us-east-1
 
 # (Continue setup via console or with additional CLI commands — TBD)
 ```
@@ -116,7 +116,7 @@ aws apigateway create-rest-api --name CustomerServiceBotAPI --region us-west-1
 ## Step 6 — Smoke Test
 
 ```bash
-curl -X POST https://<API_ID>.execute-api.us-west-1.amazonaws.com/prod/chat \
+curl -X POST https://<API_ID>.execute-api.us-east-1.amazonaws.com/prod/chat \
   -H "Content-Type: application/json" \
   -d '{"session_id": "test-001", "message": "What is your return policy?"}'
 ```
